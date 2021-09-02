@@ -7,18 +7,11 @@ export const app = express()
 
 app.disable('x-powered-by')
 
+app.use('/api/item', router)
 app.use(cors())
 app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(morgan('dev'))
-
-app.get('/', (req, res, next) => {
-  res.send({ message: 'hello' })
-})
-
-app.post('/', (req, res) => {
-  res.send({ message: 'ok' })
-})
 
 export const start = () => {
   app.listen(3000, () => {
