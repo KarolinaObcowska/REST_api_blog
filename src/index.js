@@ -1,3 +1,5 @@
 import { start } from './server';
+import { connectDB } from './config/db';
 
-start()
+connectDB();
+start();

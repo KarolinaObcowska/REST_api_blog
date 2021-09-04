@@ -4,27 +4,37 @@ const postSchema = new mongoose.Schema(
     {
         title: {
             type: String,
-            required: true
+            required: true,
+            minlength: 10
         },
-
-        image: {
-            type: String,
-            required: true
-        },
-
         content: {
             type: String,
             reqired: true,
-            minlength: 300,
+            minlength: 300
         },
-
-        creator: {
+        user: {
             type: mongoose.SchemaTypes.ObjectId,
             ref: 'User',
             required: true
         },
+        comments: [
+            {
+                user: {
+                    type: mongoose.SchemaTypes.ObjectId,
+                    ref: 'User'
+                },
+                text: {
+                    type: String,
+                    required: true
+                },
+                date: {
+                    type: Date,
+                    default: Date.now()
+                }
+            }
+        ]
     },
     { timestamps: true }
 );
 
-const Post = mongoose.model('Post', postSchema);
+export const Post = mongoose.model('Post', postSchema);

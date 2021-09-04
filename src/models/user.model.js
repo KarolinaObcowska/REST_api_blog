@@ -3,13 +3,13 @@ import bcryptjs from 'bcryptjs'
 
 const userSchema = new mongoose.Schema(
     {
-        firstName: {
+        firstname: {
             type: String,
             required: true,
             trim: true
         },
 
-        lastName: {
+        lastname: {
             type: String,
             required: true,
             trim: true
@@ -24,7 +24,8 @@ const userSchema = new mongoose.Schema(
 
         password: {
             type: String,
-            required: true
+            required: true,
+            minlength: 8
         },
 
         status: {
@@ -32,11 +33,13 @@ const userSchema = new mongoose.Schema(
             default: 'I am new'
         },
         
-        posts: {
+        posts: [
+            {
             type: mongoose.SchemaTypes.ObjectId,
             ref: 'Post'
-        }
+            }
+        ]
     }
 );
 
-export const User = mongosee.model('User', userSchema);
+export const User = mongoose.model('User', userSchema);
