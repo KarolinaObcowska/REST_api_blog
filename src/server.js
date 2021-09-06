@@ -14,6 +14,16 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: true }));
 app.use(morgan('dev'));
+app.use((err, req, res, next) => {
+  console.log(err);
+  const status = error.statusCode || 500;
+  const message = error.message;
+  const data = error.data;
+  res.status(status).json({
+      message: message,
+      data: data
+  });
+});
 
 app.use('/api/user', userRouter);
 app.use('/api/post', postRouter);

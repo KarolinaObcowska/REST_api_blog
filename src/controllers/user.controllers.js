@@ -1,5 +1,17 @@
 import { User } from '../models/user.model';
 
+export const getMe = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.userId).select('-password');
+        res.status(200).json({ msg: 'User fetched', user: user })
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+}
+
 export const getUserStatus = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId);

@@ -55,6 +55,7 @@ export const getPosts = async (req, res, next) => {
   try {
     const posts = await Post.find()
     .populate('user')
+    .select('-password')
     .sort({ createdAt: -1 });
 
     res.status(200).json({ msg: 'Fetched posts', posts: posts })
