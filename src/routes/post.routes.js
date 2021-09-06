@@ -25,16 +25,16 @@ router
     ], protect, updatePost)
     .delete(protect, deletePost);
 
-// router
-//     .route('/comment/:id')
-//     .post([
-//         check('text', 'Text is required')
-//             .not()
-//             .isEmpty()
-//         ], protect, createComment);
+router
+    .route('/comment/:id')
+    .post([
+        check('text', 'Text is required')
+            .not()
+            .isEmpty()
+        ], protect, createComment);
 
-// router
-//     .route('/comment/:id/:commentId')
-//     .delete(deleteComment);
+router
+    .route('/comment/:id/:commentId')
+    .delete(protect, deleteComment);
 
 export default router;

@@ -130,3 +130,55 @@ export const deletePost = async (req, res, next) => {
     next(err);
   }
 }
+
+export const createComment = async (req, res, next) => {
+  const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error('Validation failed, entered data is incorrect.');
+      error.statusCode = 422;
+      throw error;
+    }
+    try {
+      const user = await User.findById(req.userId);
+      const post = await Post.findById(req.params.id);
+
+      const comment = {
+        text: req.body.text,
+        user: req.userId,
+      };
+
+      post.comments.unshift(comment);
+      await post.save();
+      res.status(200).json({ msg: 'Comment created', comments: post.comments})
+    } catch (err) {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    }
+};
+
+export const deleteComment = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    const comment = post.comments.find(comment => comment.id === req.params.commentId);
+
+    if (!comment) {
+      return res.status(404).json({ msg: 'Comment not found' });
+    };
+
+    if (comment.user.toString() !== req.userId) {
+      res.status(401).json({ msg: "Not authorized" })
+    };
+
+    const removeIndex = post.comments.map(comment => comment.user).indexOf(req.userId);
+    post.comments.splice(removeIndex, 1);
+    await post.save();
+    res.status(200).json({ msg: "Comment deleted", comments: post.comments });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+}
