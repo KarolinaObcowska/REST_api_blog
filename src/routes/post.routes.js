@@ -6,7 +6,7 @@ const router = Router();
 
 router
     .route('/')
-    // .get(getPosts)
+    .get(getPosts)
     .post([
         check('content', 'Content is required')
             .not()
@@ -23,7 +23,7 @@ router
             .isEmpty(),
         check( 'title', 'Title is required')
     ], protect, updatePost)
-//     .delete(deletePost);
+    .delete(protect, deletePost);
 
 // router
 //     .route('/comment/:id')
@@ -31,7 +31,7 @@ router
 //         check('text', 'Text is required')
 //             .not()
 //             .isEmpty()
-//         ], createComment);
+//         ], protect, createComment);
 
 // router
 //     .route('/comment/:id/:commentId')

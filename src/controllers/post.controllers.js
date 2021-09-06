@@ -51,6 +51,22 @@ export const getPost = async (req, res, next) => {
   }
 }
 
+export const getPosts = async (req, res, next) => {
+  try {
+    const posts = await Post.find()
+    .populate('user')
+    .sort({ createdAt: -1 });
+
+    res.status(200).json({ msg: 'Fetched posts', posts: posts })
+  } catch (err) {
+    if (!err.statusCode){
+      err.statusCode = 500;
+    }
+    next(err)
+  }
+
+}
+
 export const updatePost = async (req,res, next) => {
   const postId = req.params.id;
   const errors = validationResult(req);
@@ -85,4 +101,32 @@ export const updatePost = async (req,res, next) => {
       }
       next(err);
     };
+};
+
+export const deletePost = async (req, res, next) => {
+  const postId = req.params.id;
+  const post = await Post.findById(postId);
+  if (!post) {
+    const error = new Error('Could not find post.');
+    error.statusCode = 404;
+    throw error;
+  }
+  if (post.user.toString() !== req.userId) {
+    const error = new Error('Not authorized');
+    error.statusCode = 403;
+    throw error;
+  }
+  try {
+    await Post.findByIdAndRemove(postId);
+    const user = await User.findById(req.userId);
+    user.posts.pull(postId);
+    await user.save();
+
+    res.status(200).json({ msg: 'Deleted post' });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
 }
